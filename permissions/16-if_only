@@ -1,2 +1,2 @@
 #!/bin/bash
-telnet towel.blinkenlights.nl
+find . -name hello -user guillaume -exec sudo chown vincent {} +
