@@ -1,2 +1,7 @@
 #!/bin/bash
-chown --from=guillaume betty hello
+if [ "$(stat -c %U hello)" = "guillaume" ]; then
+    sudo chown vincent hello
+    echo "Owner changed to vincent."
+else
+    echo "The file 'hello' is not owned by guillaume. No changes made."
+fi
