@@ -1,8 +1,43 @@
+
 #!/usr/bin/env bash
 #Manage my process
-while true
-do
-echo "I am alive!" >/tmp/my_process
-sleep 2
-((++i))
-done
+PID_FILE="/var/run/my_process.pid"
+PROCESS_SCRIPT="/path/to/manage_my_process"
+
+case "$1" in
+  start)
+    if [ -f "$PID_FILE" ]; then
+      echo "manage_my_process already started"
+    else
+      # Start the process
+      $PROCESS_SCRIPT &
+      echo $! > "$PID_FILE"
+      echo "manage_my_process started"
+    fi
+    ;;
+  stop)
+    if [ -f "$PID_FILE" ]; then
+      # Kill the process
+      kill $(cat "$PID_FILE")
+      rm "$PID_FILE"
+      echo "manage_my_process stopped"
+    else
+      echo "manage_my_process is not running"
+    fi
+    ;;
+  restart)
+    if [ -f "$PID_FILE" ]; then
+      # Stop the process
+      kill $(cat "$PID_FILE")
+      rm "$PID_FILE"
+      echo "manage_my_process stopped"
+    fi
+    # Start the process again
+    $PROCESS_SCRIPT &
+    echo $! > "$PID_FILE"
+    echo "manage_my_process restarted"
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    ;;
+esac
